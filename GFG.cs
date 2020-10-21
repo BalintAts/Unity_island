@@ -5,7 +5,7 @@ class GFG
 
     // Define Infinite (Using INT_MAX  
     // caused overflow problems) 
-    static int INF = 10000;
+    static int INF = 10000000;
 
     public class Point
     {
