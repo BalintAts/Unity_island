@@ -114,9 +114,9 @@ public class LeoIsland : MonoBehaviour
                 {
                     Instantiate(objectToSpawn, new Vector3(cordX, 0, cordZ), new Quaternion(0, 0, 0, 0));
                 }
-                cordZ++;
+                cordZ+= 0.5f;
             }
-            cordX++;
+            cordX += 0.5f;
         }
     }
 
@@ -126,8 +126,12 @@ public class LeoIsland : MonoBehaviour
         {   
             //Check for every side if can put close to it
             points[i] = new GFG.Point(boundaries[i][0], boundaries[i][1]);
-            if (!CanPutTreeByLine(new Vector3(boundaries[i][0], 0, boundaries[i][1]), new Vector3(boundaries[(i + 1) % boundaries.Length][0], 0, boundaries[(i + 1) % boundaries.Length][1]), new Vector3(cordX, cordZ)))
+            int k = (i+1) % boundaries.Length;
+            Vector3 lineStart = new Vector3(boundaries[i][0], 0, boundaries[i][1]);
+            Vector3 lineEnd = new Vector3(boundaries[k][0], 0, boundaries[k][1]);
+            if (!CanPutTreeByLine(lineStart, lineEnd, new Vector3(cordX,0, cordZ)))
             {
+                Debug.Log("Too close");
                 return false;
             }
         }
@@ -137,6 +141,14 @@ public class LeoIsland : MonoBehaviour
     bool CanPutTreeByLine(Vector3 lineStart, Vector3 lineEnd, Vector3 point)
     {
         Vector3 closestOnLine = FindClosestPointOnLineSegment(lineStart, lineEnd, point);
+        Debug.Log("===========");
+        Debug.Log(lineStart);
+        Debug.Log(lineEnd);
+        Debug.Log(point.x);
+        Debug.Log(point.z);
+        //Debug.Log(closestOnLine);
+        //Debug.Log((closestOnLine - point));
+        //Debug.Log((closestOnLine - point).magnitude);
         if ((closestOnLine - point).magnitude >= epsilon)
         {
             return true;
