@@ -4,13 +4,15 @@ using System.Globalization;
 using System.IO;
 using UnityEngine;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 public class LeoIsland : MonoBehaviour
 {
-    public float epsilon;
-    public Vector2[] boundaries;  //the vertices of the island polygon
+    //public float epsilon;
+    public Vector2[] boundaries;  //the vertices of the island polygon for read fron file
     public Vector3[] vertices3D;  //same with 3d vectors
     public Dictionary<string,float> boundingSquare;
+    public static int numberOfTrees = 0;
 
 
     [SerializeField]
@@ -21,8 +23,10 @@ public class LeoIsland : MonoBehaviour
 
     public static int GetNumTrees(IEnumerable<Vector2> island, float epsilon)
     {
-        throw new NotImplementedException();
+        return numberOfTrees;
     }
+
+
 
     public static Vector2[] LoadIsland(StreamReader sr)
     {
@@ -113,6 +117,7 @@ public class LeoIsland : MonoBehaviour
                 if (CanPutTreeToIsland(cordX, cordZ))
                 {
                     Instantiate(objectToSpawn, new Vector3(cordX, 0, cordZ), new Quaternion(0, 0, 0, 0));
+                    numberOfTrees++;
                 }
                 cordZ+= 0.5f;
             }
@@ -120,7 +125,7 @@ public class LeoIsland : MonoBehaviour
         }
     }
 
-    bool CanPutTreeToIsland(float cordX, float cordZ) {
+    public bool CanPutTreeToIsland(float cordX, float cordZ) {
         GFG.Point[] points = new GFG.Point[boundaries.Count()];
         for(int i=0; i <boundaries.Count()  ; i++)
         {   
@@ -129,39 +134,30 @@ public class LeoIsland : MonoBehaviour
             int k = (i+1) % boundaries.Length;
             Vector3 lineStart = new Vector3(boundaries[i][0], 0, boundaries[i][1]);
             Vector3 lineEnd = new Vector3(boundaries[k][0], 0, boundaries[k][1]);
-            if (!CanPutTreeByLine(lineStart, lineEnd, new Vector3(cordX,0, cordZ)))
-            {
-                Debug.Log("Too close");
-                return false;
-            }
+            //if (!CanPutTreeByLine(lineStart, lineEnd, new Vector3(cordX, 0, cordZ)))  //this test happens int the Tree prefab's coastTest script
+            //{
+            //    return false;
+            //}
         }
         return GFG.isInside(points, boundaries.Count(), new GFG.Point(cordX, cordZ));
     }
 
-    bool CanPutTreeByLine(Vector3 lineStart, Vector3 lineEnd, Vector3 point)
-    {
-        Vector3 closestOnLine = FindClosestPointOnLineSegment(lineStart, lineEnd, point);
-        Debug.Log("===========");
-        Debug.Log(lineStart);
-        Debug.Log(lineEnd);
-        Debug.Log(point.x);
-        Debug.Log(point.z);
-        //Debug.Log(closestOnLine);
-        //Debug.Log((closestOnLine - point));
-        //Debug.Log((closestOnLine - point).magnitude);
-        if ((closestOnLine - point).magnitude >= epsilon)
-        {
-            return true;
-        }
-        return false;
-    }
+    //public bool CanPutTreeByLine(Vector3 lineStart, Vector3 lineEnd, Vector3 point)
+    //{
+    //    Vector3 closestOnLine = FindClosestPointOnLineSegment(lineStart, lineEnd, point);
+    //    if ((closestOnLine - point).magnitude >= epsilon)
+    //    {
+    //        return true;
+    //    }
+    //    return false;
+    //}
 
-    public static Vector3 FindClosestPointOnLineSegment(Vector3 lineStart, Vector3 lineEnd, Vector3 point)
-    {
-        Vector3 line = lineEnd - lineStart;
-        Vector3 dir = point - lineStart;
-        float d = Vector3.Dot(line, dir) / line.sqrMagnitude;
-        d = Mathf.Clamp01(d);
-        return Vector3.Lerp(lineStart, lineEnd, d);
-    }
+    //public static Vector3 FindClosestPointOnLineSegment(Vector3 lineStart, Vector3 lineEnd, Vector3 point)
+    //{
+    //    Vector3 line = lineEnd - lineStart;
+    //    Vector3 dir = point - lineStart;
+    //    float d = Vector3.Dot(line, dir) / line.sqrMagnitude;
+    //    d = Mathf.Clamp01(d);
+    //    return Vector3.Lerp(lineStart, lineEnd, d);
+    //}
 }
