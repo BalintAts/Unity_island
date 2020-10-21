@@ -7,7 +7,7 @@ using System.Linq;
 
 public class LeoIsland : MonoBehaviour
 {
-    public float epsilon;
+    public float epsilon = 10;
     public Vector2[] boundaries;  //the vertices of the island polygon
     public Vector3[] vertices3D;
     public Dictionary<string,float> boundingSquare;
@@ -17,7 +17,7 @@ public class LeoIsland : MonoBehaviour
     string fileToRead;
 
     [SerializeField]
-    string objectToSpawn;
+    GameObject objectToSpawn;
 
     public static int GetNumTrees(IEnumerable<Vector2> island, float epsilon)
     {
@@ -83,6 +83,7 @@ public class LeoIsland : MonoBehaviour
 
         vertices3D = vertices;
         CreateBoundingSquare();
+        SpawnTrees();
     }
 
     void CreateBoundingSquare()
@@ -108,7 +109,48 @@ public class LeoIsland : MonoBehaviour
     void SpawnTrees()
     {
         float cordX = boundingSquare["left"];
-        //float cordY
-        //while 
+        while (cordX < boundingSquare["right"])
+        {
+            float cordZ = boundingSquare["bottom"];
+            while (cordZ <= boundingSquare["top"])
+            {
+                if (CanPutTreeToIsland(cordX, cordZ))
+                {
+                    Instantiate(objectToSpawn, new Vector3(cordX, 0, cordZ), new Quaternion(0, 0, 0, 0));
+                }
+                cordZ++;
+            }
+            cordX++;
+        }
+    }
+
+    bool CanPutTreeToIsland(float cordX, float cordZ) {
+        GFG.Point[] points = new GFG.Point[boundaries.Count()];
+        for(int i=0; i <boundaries.Count(); i++)
+        {   
+
+            points[i] = new GFG.Point(boundaries[i][0], boundaries[i][1]);
+           
+        }
+        return GFG.isInside(points, boundaries.Count(), new GFG.Point(cordX, cordZ));
+    }
+
+    bool CanPutTreeByLine(Vector3 lineStart, Vector3 lineEnd, Vector3 point)
+    {
+        Vector3 closestOnLine = FindClosestPointOnLineSegment(lineStart, lineEnd, point);
+        if ((closestOnLine - point).magnitude >= epsilon)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public static Vector3 FindClosestPointOnLineSegment(Vector3 lineStart, Vector3 lineEnd, Vector3 point)
+    {
+        Vector3 line = lineEnd - lineStart;
+        Vector3 dir = point - lineStart;
+        float d = Vector3.Dot(line, dir) / line.sqrMagnitude;
+        d = Mathf.Clamp01(d);
+        return Vector3.Lerp(lineStart, lineEnd, d);
     }
 }
