@@ -274,7 +274,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e03ed96ab5f477046a5023c1fe0d249c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  epsilon: 0
+  epsilon: 3
   boundaries: []
   vertices3D: []
   fileToRead: Island4.txt

@@ -7,9 +7,9 @@ using System.Linq;
 
 public class LeoIsland : MonoBehaviour
 {
-    public float epsilon = 10;
+    public float epsilon;
     public Vector2[] boundaries;  //the vertices of the island polygon
-    public Vector3[] vertices3D;
+    public Vector3[] vertices3D;  //same with 3d vectors
     public Dictionary<string,float> boundingSquare;
 
 
@@ -44,10 +44,6 @@ public class LeoIsland : MonoBehaviour
         using (StreamReader sr = new StreamReader(path))
         {
             boundaries = LoadIsland(sr);
-        }
-        foreach (Vector2 vector in boundaries)
-        {
-            Debug.Log(vector.x);
         }
 
         CreateIslandMesh();
@@ -126,11 +122,14 @@ public class LeoIsland : MonoBehaviour
 
     bool CanPutTreeToIsland(float cordX, float cordZ) {
         GFG.Point[] points = new GFG.Point[boundaries.Count()];
-        for(int i=0; i <boundaries.Count(); i++)
+        for(int i=0; i <boundaries.Count()  ; i++)
         {   
-
+            //Check for every side if can put close to it
             points[i] = new GFG.Point(boundaries[i][0], boundaries[i][1]);
-           
+            if (!CanPutTreeByLine(new Vector3(boundaries[i][0], 0, boundaries[i][1]), new Vector3(boundaries[(i + 1) % boundaries.Length][0], 0, boundaries[(i + 1) % boundaries.Length][1]), new Vector3(cordX, cordZ)))
+            {
+                return false;
+            }
         }
         return GFG.isInside(points, boundaries.Count(), new GFG.Point(cordX, cordZ));
     }
