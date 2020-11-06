@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class coastTest : MonoBehaviour
 {
-    [SerializeField]
+    //[SerializeField]
     public LeoIsland leoIslandScript;
     public Vector2[] boundaries;
     public float epsilon = 1;
@@ -21,8 +21,8 @@ public class coastTest : MonoBehaviour
     public void AdjustEpsilon(float inputEpsilon)
     {
         Debug.Log(inputEpsilon);
-        //epsilon = inputEpsilon;   //this doesn't work
-        gameObject.SetActive(this.FarEnough());
+        epsilon = inputEpsilon;   //this doesn't work
+        //gameObject.SetActive(this.FarEnough());
         //Debug.Log(isActiveAndEnabled);
         Debug.Log(epsilon);
     }
@@ -61,7 +61,7 @@ public class coastTest : MonoBehaviour
     public bool CanPutTreeByLine(Vector3 lineStart, Vector3 lineEnd, Vector3 point)
     {
         Vector3 closestOnLine = FindClosestPointOnLineSegment(lineStart, lineEnd, point);
-        Debug.Log(epsilon);
+        Debug.Log("epsilon = " + epsilon);
         if ((closestOnLine - point).magnitude >= this.epsilon)
         {
             return true;

@@ -19,6 +19,9 @@ public class LeoIsland : MonoBehaviour
     string fileToRead;
 
     [SerializeField]
+    float density;
+
+    [SerializeField]
     GameObject objectToSpawn;
 
     public static int GetNumTrees(IEnumerable<Vector2> island, float epsilon)
@@ -119,9 +122,9 @@ public class LeoIsland : MonoBehaviour
                     Instantiate(objectToSpawn, new Vector3(cordX, 0, cordZ), new Quaternion(0, 0, 0, 0));
                     numberOfTrees++;
                 }
-                cordZ+= 0.5f;
+                cordZ+= density;
             }
-            cordX += 0.5f;
+            cordX += density;
         }
     }
 
